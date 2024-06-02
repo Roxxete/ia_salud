@@ -1,0 +1,39 @@
+# Importar las bibliotecas necesarias
+from sklearn import datasets, svm, metrics
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+
+# Cargar el conjunto de datos de cáncer de mama
+cancer = datasets.load_breast_cancer()
+
+# Mostrar características de los datos
+print("Características del dataset:")
+print(cancer.feature_names)
+print("Clases del dataset:")
+print(cancer.target_names)
+
+# Dividir el conjunto de datos en entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(cancer.data, cancer.target, test_size=0.5, shuffle=True, random_state=42)
+
+# Crear un clasificador SVM
+classifier = svm.SVC(kernel='linear', C=1)
+
+# Entrenar el clasificador
+classifier.fit(X_train, y_train)
+
+# Hacer predicciones en el conjunto de prueba
+predicted = classifier.predict(X_test)
+
+# Evaluar el modelo
+print(f"Classification report for classifier {classifier}:\n"
+      f"{metrics.classification_report(y_test, predicted)}\n")
+
+print(f"Confusion matrix:\n{metrics.confusion_matrix(y_test, predicted)}")
+
+# Visualizar algunas de las predicciones
+plt.figure(figsize=(10, 5))
+plt.scatter(X_test[:, 0], X_test[:, 1], c=predicted, cmap=plt.cm.coolwarm, edgecolor='k')
+plt.xlabel(cancer.feature_names[0])
+plt.ylabel(cancer.feature_names[1])
+plt.title('Clasificación de Tumores de Cáncer de Mama')
+plt.show()
